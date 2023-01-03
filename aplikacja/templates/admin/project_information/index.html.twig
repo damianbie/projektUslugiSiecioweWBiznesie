@@ -1,0 +1,31 @@
+{% extends 'core/empty_admin.html.twig' %}
+{% block mainContent %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>Projekt z przedmiotu usługi sieciowe w biznesie.</h1>
+            <h3>Informatyka 4EFZI 2022/2023 P01 Bielecki Damian</h3>
+            <h4>Indeks: 163461</h4>
+            <p class="text-justify">
+                Projekt zakładał napisanie programu w dowolnej technologi wspomagającego pracę warsztatu samochodowego.
+                Aplikacja została napisana przy pomocy języka PHP i freameworka symfony w wersji 5.3.
+                Do projektu wykorzystałem silnik bazy danych MYSQL. Komunikacja pomiędzy bazą a aplikacją realizowana jest dzięki pakietowi Doctrine.
+                Dla ułatwienia testowania baza danych zawiera automatycznie wygenerowane dane testowe (ok. 2100 zleceń, 13000 zdań, 300 klientów i 500 pojazdów). 
+            </p>
+            <img src="/schematERD.png" class="img-fluid" alt="">
+            <p class="text-center">
+                <i>Diagram ERD bazy danych</i>
+            </p>
+            <p>
+                <h4>Wykorzystane narzędzia:</h4>
+                <ul>
+                    <li><a href="https://symfony.com" target="_blank">Szkielet aplikacji - symfony</a></li>
+                    <li><a href="https://adminlte.io" target="_blank">Szablon graficzny - adminLTE</a></li>
+                    <li><a href="https://github.com/fzaninotto/Faker#fakerprovideren_usperson"
+                           target="_blank">Generator danych - faker</a></li>
+                </ul>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

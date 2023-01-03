@@ -1,0 +1,7 @@
+admin_vehicles:
+  path: /pojazdy/
+  controller: App\Controller\Admin\VehicleController::index
+
+admin_vehicles_add:
+  path: /pojazdy/dodaj
+  controller: App\Controller\Admin\VehicleController::add

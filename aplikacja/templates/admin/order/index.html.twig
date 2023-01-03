@@ -1,0 +1,215 @@
+{% extends 'core/empty_admin.html.twig' %}
+{% block scripts %}
+    <script>
+        $(document).ready( function () {
+            $('#dataTableAc').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5',
+                ]
+            });
+            $('#dataTableAll').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5',
+                ]
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block mainContent %}
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Aktywne zlecenia</h3>
+         <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table class="table table-bordered table-striped table-hover" id="dataTableAc">
+            <thead>
+            {% set table_header %}
+                <tr>
+                    <th>ID</th>
+                    <th>Klient</th>
+                    <th>Pojazd</th>
+                    <th>Data rejestracji</th>
+                    <th>kod klienta</th>
+                    <th>Koszt brutto</th>
+                    <th>Akcje</th>
+                </tr>
+            {% endset %}
+            {{ table_header }}
+            </thead>
+            <tbody>
+                {% for o in actualOrders %}
+                    <tr class="expandable-table" aria-expanded="false">
+                        <td>{{ o.id }}</td>
+                        <td>
+                            {% if o.client.isCompany %}
+                                {{ o.client.name }}<br>
+                                NIP:
+                                {{ o.client.nip }}
+                            {% else %}
+                                {{ o.client.name }}
+                                {{ o.client.surName }}<br>
+                                PESEL:
+                                {{ o.client.pesel }}
+                            {% endif %}
+                        </td>
+                        <td>
+                        {# {%dump(o)%} #}
+                            {{ o.vehicle.model }}
+                            Nr. rej:
+                            {{ o.vehicle.registrationNumber }}<br>
+                            VIN:
+                            {{ o.vehicle.vin }}
+                        </td>
+                        <td>{{ o.orderedAt|date('Y-m-d') }}</td>
+                        <td>
+                        <a href="{{ path('client_order', {id: o.ClientCode}) }}">
+                            {{ o.ClientCode }}
+                        </a>
+                        </td>
+                        <td>
+                            {% set sum = 0 %}
+                            {% for s in o.services %}
+                                 {% set sum = sum + s.priceNetto + (s.priceNetto * (s.tax/100)) %}
+                            {% endfor %}
+                            {{ sum }}
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a type="button" class="btn btn-default " href="{{ path('admin_order_detalis', {id: o.id}) }}">Szczegóły</a>
+                                <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu" role="menu" style="">
+                                    <a class="dropdown-item" href="{{ path('admin_order_edit', {id: o.id}) }}">Edytuj</a>
+                                    <a class="dropdown-item text-warning" href="{{ path('admin_order_end', {id: o.id}) }}">Zakończ zlecenie</a>
+{#                                    <a class="dropdown-item text-danger" href="{{ path('admin_order_detalis', {id: o.id}) }}">Usuń</a>#}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+            {{ table_header }}
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+
+
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Wszystkie zlecenia</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table class="table table-bordered table-striped table-hover" id="dataTableAll">
+            <thead>
+            {% set table_header %}
+                <tr>
+                    <th>ID</th>
+                    <th>Klient</th>
+                    <th>Pojazd</th>
+                    <th>Data rejestracji</th>
+                    <th>kod klienta</th>
+                    <th>Koszt brutto</th>
+                    <th>Data zakończenia</th>
+                    <th>Akcje</th>
+                </tr>
+            {% endset %}
+            {{ table_header }}
+            </thead>
+            <tbody>
+            {% for o in allOrders %}
+                <tr class="expandable-table" aria-expanded="false">
+                    <td>{{ o.id }}</td>
+                    <td>
+                        {% if o.client.isCompany %}
+                            {{ o.client.name }}<br>
+                            NIP:
+                            {{ o.client.nip }}
+                        {% else %}
+                            {{ o.client.name }}
+                            {{ o.client.surName }}<br>
+                            PESEL:
+                            {{ o.client.pesel }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ o.vehicle.model }}
+                        Nr. rej:
+                        {{ o.vehicle.registrationNumber }}<br>
+                        VIN:
+                        {{ o.vehicle.vin }}
+                    </td>
+                    <td>{{ o.orderedAt|date('Y-m-d') }}</td>
+                    <td>
+                        <a href="{{ path('client_order', {id: o.ClientCode}) }}">
+                            {{ o.ClientCode }}
+                        </a>
+                    </td>
+                    <td>
+                        {% set sum = 0 %}
+                        {% for s in o.services %}
+                            {% set sum = sum + s.priceNetto + (s.priceNetto * (s.tax/100)) %}
+                        {% endfor %}
+                        {{ sum }}
+                    </td>
+                    <td>
+                        {% if o.endDate is not null %}
+                            {{ o.endDate|date('d/m/Y')}}
+                        {% else %}
+                        ----------
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a type="button" class="btn btn-default " href="{{ path('admin_order_detalis', {id: o.id}) }}">Szczegóły</a>
+                            <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu" role="menu" style="">
+                                {% if o.endDate is null %}
+                                    <a class="dropdown-item" href="{{ path('admin_order_edit', {id: o.id}) }}">Edytuj</a>
+                                    <a class="dropdown-item text-warning" href="{{ path('admin_order_end', {id: o.id}) }}">Zakończ zlecenie</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            {{ table_header }}
+            </tfoot>
+        </table>
+    </div>
+</div>
+{% endblock %}

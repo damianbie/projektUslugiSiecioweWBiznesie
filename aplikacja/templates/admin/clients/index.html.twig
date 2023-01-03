@@ -1,0 +1,126 @@
+{% extends 'core/empty_admin.html.twig' %}
+{% block title %}Klienci {% endblock %}
+{% block stylesheet %}
+
+{% endblock %}
+{% block scripts %}
+    <script>
+
+    </script>
+{% endblock %}
+
+
+{% block mainContent %}
+
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Klienci - podmioty fizyczne</h3>
+                       <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table class="table table-bordered table-striped dataTableDefault" >
+                <thead>
+                {% set table_header %}
+                    <tr>
+                        <td>ID</td>
+                        <td>Imie</td>
+                        <td>Nazwisko</td>
+                        <td>Pesel</td>
+                        <td>Numer telefonu</td>
+                        <td>Akcje</td>
+                    </tr>
+                {% endset %}
+                {{ table_header }}
+                </thead>
+                <tbody>
+                {% for c in clients %}
+                    <tr>
+                        <td> {{ c.id }} </td>
+                        <td> {{ c.name }} </td>
+                        <td> {{ c.surname }} </td>
+                        <td> {{ c.pesel }}</td>
+                        <td> {{ c.phoneNumber }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <a type="button" class="btn btn-default" href="{{ path('admin_client_detalis', {id: c.id}) }}">Szczegóły</a>
+                                <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu" role="menu" style="">
+                                    <a class="dropdown-item" href="{{ path('admin_clients_edit', {id: c.id}) }}">Edytuj</a>
+                                    <a class="dropdown-item text-danger" href="{{ path('admin_client_delete', {id: c.id}) }}">Usuń</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                {{ table_header }}
+                </tfoot>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Klienci - firmy</h3>
+                       <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table class="table table-bordered table-striped dataTableDefault">
+                <thead>
+                {% set table_header %}
+                    <tr>
+                        <td>ID</td>
+                        <td>Nazwa</td>
+                        <td>NIP</td>
+                        <td>REGON</td>
+                        <td>telefon kontaktowy</td>
+                        <td>Akcje</td>
+                    </tr>
+                {% endset %}
+                {{ table_header }}
+                </thead>
+                <tbody>
+                {% for c in companies %}
+                    <tr>
+                        <td> {{ c.id }} </td>
+                        <td> {{ c.name }} </td>
+                        <td> {{ c.nip }}</td>
+                        <td> {{ c.regon }}</td>
+                        <td> {{ c.phoneNumber }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <a type="button" class="btn btn-default" href="{{ path('admin_client_detalis', {id: c.id}) }}">Szczegóły</a>
+                                <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu" role="menu" style="">
+                                    <a class="dropdown-item" href="{{ path('admin_clients_edit', {id: c.id}) }}">Edytuj</a>
+                                    <a class="dropdown-item text-danger" href="{{ path('admin_client_delete', {id: c.id}) }}">Usuń</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                {{ table_header }}
+                </tfoot>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+{% endblock %}

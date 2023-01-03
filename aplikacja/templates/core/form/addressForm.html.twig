@@ -1,0 +1,30 @@
+<div class="form-group">
+    {{ form_label(address.country) }}
+    {{ form_widget(address.country, {'attr': {'class': 'form-control select2'}}) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(address.province) }}
+    {{ form_widget(address.province, {'attr': {'class': 'form-control'}}) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(address.town) }}
+    {{ form_widget(address.town, {'attr': {'class': 'form-control'}}) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(address.street) }}
+    {{ form_widget(address.street, {'attr': {'class': 'form-control'}}) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(address.postCode) }}
+    {{ form_widget(address.postCode, {'attr': {'class': 'form-control postalCode',
+        'data-inputmask-mask': "99-999"}}) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(address.houseNumber) }}
+    {{ form_widget(address.houseNumber, {'attr': {'class': 'form-control'}}) }}
+</div>

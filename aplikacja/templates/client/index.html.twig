@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Faktura | TwójWarsztat.pl</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    {% set states ={
+        1: 'do naprawy',
+        2: 'trwa naprawa',
+        3: 'zakończono',
+        4: 'konsultacja z klientem',
+        5: 'przerwano'
+    } %}
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Main content -->
+                        <div class="invoice p-3 mb-3">
+                            <!-- title row -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-globe"></i> {{ companyName }}
+                                        <small class="float-right">Data: {{ data.orderedAt|date("m/d/Y") }}</small>
+                                    </h4>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- info row -->
+                            <div class="row invoice-info">
+                                <div class="col-sm-4 invoice-col">
+                                    Od
+                                    <address>
+                                        <strong>DamianB Inc.</strong><br>
+                                        795 Folsom Ave, Suite 600<br>
+                                        Rzeszów<br>
+                                        Email: 163461@stud.prz.edu.pl
+                                    </address>
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-sm-4 invoice-col">
+                                    Do
+                                    <address>
+                                        {% if data.client.isCompany %}
+                                            <strong>{{ data.client.name}}</strong><br>
+                                        {% else %}
+                                            <strong>{{ data.client.name}} {{ data.client.surname}} </strong><br>
+                                        {% endif %}
+
+                                        {{ data.client.correspondenceAddress.country }} <br>
+                                        {{ data.client.correspondenceAddress.town }},{{ data.client.correspondenceAddress.postCode }}<br>
+                                        Telefon: {{ data.client.phoneNumber }}<br>
+                                        Email: {{ data.client.email }}
+                                    </address>
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-sm-4 invoice-col">
+                                    <b>ID zamówienia:</b> {{ data.id }}<br>
+                                    {% if data.endDate is not null %}
+                                        <b>Data zamknięcia:</b> {{ data.endDate|date("m/d/Y") }}<br>
+                                    {% endif %}
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                            <!-- Table row -->
+                            <div class="row">
+                                <div class="col-12 table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Nr</th>
+                                            <th>Nazwa</th>
+                                            <th>Opis</th>
+                                            <th>stan</th>
+                                            <th>cena netto</th>
+                                            <th>podatek</th>
+                                            <th>cena brutto</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% set inc = 1 %}
+                                        {% set netto = 0 %}
+                                        {% set brutto = 0 %}
+                                        {% set taxes = 0 %}
+                                        {% for s in data.services %}
+                                            <tr>
+                                                <td>{{ inc }}</td>
+                                                <td>{{ s.name }}</td>
+                                                <td>{{ s.description }}</td>
+                                                <td>{{ states[s.state] }}</td>
+                                                <td>{{ s.priceNetto }}</td>
+                                                <td>{{ s.tax }}</td>
+                                                <td>{{ s.priceNetto + s.priceNetto*s.tax/100 }}</td>
+                                                {% set netto    = netto + s.priceNetto %}
+                                                {% set taxes    = taxes + (s.priceNetto * s.tax/100) %}
+                                                {% set brutto   = brutto + (s.priceNetto * s.tax/100) + s.priceNetto %}
+                                            </tr>
+                                            {% set inc = inc + 1 %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+
+                            <div class="row">
+                                <!-- accepted payments column -->
+                                <div class="col-6">
+                                    <p class="lead">Komentarz:</p>
+                                    <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                                        {{ data.additionalInfo }}
+                                    </p>
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-6">
+                                    <p class="lead">Podsumowanie z dnia  {{ "now"|date("m/d/Y") }}</p>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tr>
+                                                <th style="width:50%">Netto:</th>
+                                                <td>{{ netto }}PLN</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Podatki</th>
+                                                <td>{{ taxes }}PLN</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Suma:</th>
+                                                <td>{{ brutto }}PLN</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                        <!-- /.invoice -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+</div>
+<footer class="main-footer no-print">
+    <div class="float-right d-none d-sm-block">
+        <b>Wersja: </b> 1.0.0
+    </div>
+    <strong>Copyright &copy; {{ "now"|date('Y') }} </strong> Projekt zaliczeniowy, Damian Bielecki 4EFZI
+</footer>
+<!-- ./wrapper -->
+<!-- jQuery -->
+<script src="/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="/dist/js/adminlte.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+admin_workers:
+  path: /pracownicy/
+  controller: App\Controller\Admin\WorkersController::index
+
+admin_workers_detalis:
+  path: /pracownik/{id}
+  controller: App\Controller\Admin\WorkersController::workerDetalis
+  requirements:
+    id: '\d+'
+
+admin_workers_edit:
+  path: /pracownik/edytuj/{id}
+  controller: App\Controller\Admin\WorkersController::workerEdit
+  requirements:
+    id: '\d+'
+
+admin_workers_delete:
+  path: /pracownik/usun/{id}
+  controller: App\Controller\Admin\WorkersController::deleteWorker
+  requirements:
+    id: '\d+'
+
+admin_workers_add:
+  path: /pracownicy/nowy/
+  controller: App\Controller\Admin\WorkersController::addWorker
+
+
+admin_workPlace_edit:
+  path: /stanowisko/edytuj/{id}
+  controller: App\Controller\Admin\WorkersController::workPlaceEdit
+  requirements:
+    id: '\d+'
+
+admin_workPlace_delete:
+  path: /stanowisko/usun/{id}
+  controller: App\Controller\Admin\WorkersController::deleteWorkPlace
+  requirements:
+    id: '\d+'
+
+admin_user_edit:
+  path: /uzytkownik/edytuj/{id}
+  controller: App\Controller\Admin\UsersController::edituser
+admin_user_add:
+  path: /uzytkownik/dodaj
+  controller: App\Controller\Admin\UsersController::addUser
+  requirements:
+
+admin_user_index:
+  path: /uzytkownicy/
+  controller: App\Controller\Admin\UsersController::index
+
+admin_user_enable:
+  path: /uzytkownik/{id}/aktywuj
+  controller: App\Controller\Admin\UsersController::enableUser
+  requirements:
+    id: '\d+'
+
+admin_user_disable:
+  path: /uzytkownik/{id}/deaktywuj
+  controller: App\Controller\Admin\UsersController::disableUser
+  requirements:
+    id: '\d+'
+
+admin_sys_settings:
+  path: /system/ustawienia
+  controller: App\Controller\Admin\SystemController::index

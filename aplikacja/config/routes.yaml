@@ -1,0 +1,14 @@
+
+workers_routes:
+  prefix: admin
+  resource: routes/admin.yaml
+
+app:
+  path: /
+  controller: App\Controller\ClientController::index
+
+client_order:
+  path:      /zlecenie/{id}
+  controller: App\Controller\ClientController::show
+  requirements:
+

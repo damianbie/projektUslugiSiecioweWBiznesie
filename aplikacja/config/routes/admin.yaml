@@ -1,0 +1,62 @@
+app_login:
+  path:      /login
+  controller: App\Controller\Admin\Security\SecurityController::login
+
+app_logout:
+  path:      /logout
+  controller: App\Controller\Admin\Security\SecurityController::logout
+
+app_information:
+  path: /informacje
+  controller: App\Controller\Admin\ProjectInformationController::index
+
+admin_dashboard:
+  path: /
+  controller: App\Controller\Admin\DashboardController::index
+
+admin_service_close:
+  path: /usluga/zakoncz/{id}
+  controller: App\Controller\Admin\DashboardController::endSerive
+
+admin_service_setMe:
+  path: /usluga/przydziel/{id}
+  controller: App\Controller\Admin\DashboardController::setMe
+
+admin_orders:
+  path: /zlecenia/{id}
+  defaults:
+    id: ''
+  requirements:
+    id: '\d+'
+  controller: App\Controller\Admin\OrderController::index
+
+admin_order_add:
+  path: /zlecenia/nowe
+  controller: App\Controller\Admin\OrderController::add
+
+admin_order_edit:
+  path: /zlecenia/edytuj/{id}
+  controller: App\Controller\Admin\OrderController::edit
+  requirements:
+    id: '\d+'
+
+admin_order_detalis:
+  path: /zlecenia/szczegoly/{id}
+  controller: App\Controller\Admin\OrderController::detalis
+  requirements:
+    id: '\d+'
+
+admin_order_end:
+  path: /zlecenia/zakoncz/{id}
+  controller: App\Controller\Admin\OrderController::end
+  requirements:
+    id: '\d+'
+
+admin_routes:
+  resource: admin/worker.yaml
+
+clients_routes:
+  resource: admin/clients.yaml
+
+vehicles_routes:
+  resource: admin/vehicles.yaml

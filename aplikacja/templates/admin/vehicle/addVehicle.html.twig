@@ -1,0 +1,45 @@
+{% extends 'core/empty_admin.html.twig' %}
+{% block title %}Dodawanie stanowiska{% endblock %}
+{% block mainContent %}
+
+{% set flash_sc = app.flashes('successForm') %}
+{% if flash_sc is defined and flash_sc|length > 0 %}
+    {% if flash_sc[0] == 0 %} {% set _scc = 0 %}
+    {% else %} {% set _scc = 1 %} {% endif %}
+
+    <div class="alert {% if _scc==1 %}alert-success{% else %} alert-warning {% endif %} alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h5><i class="icon fas {% if _scc==1 %}fa-check{% else %} fa-ban {% endif %}"></i> {% if _scc==1 %}Sukces!{% else %}Nieoczekiwany błąd{% endif %}</h5>
+        <ul>
+            {% for ms in app.flashes('msg') %}
+                <li>{{ ms }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header d-flex p-0">
+        <h3 class="card-title p-3">Dodawanie pojazdu</h3>
+    </div><!-- /.card-header -->
+    <div class="card-body">
+        <div class="tab-pane active" id="person">
+            {{ form_start(vehicle) }}
+
+            {% set formErrors = vehicle.vars.errors.form.getErrors(true) %}
+            {% if formErrors|length %}
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-ban"></i> Błędy w formularzu</h5>
+                    <ul>
+                        {% for error in formErrors %}
+                            <li>{{ error.message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            {{ form_end(vehicle) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

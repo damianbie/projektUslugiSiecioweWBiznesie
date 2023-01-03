@@ -1,0 +1,27 @@
+admin_clients:
+  path: /klienci/
+  controller: App\Controller\Admin\ClientsController::index
+
+admin_clients_edit:
+  path: /klienci/{id}
+  defaults:
+    id: ''
+  requirements:
+    id: '\d+'
+  controller: App\Controller\Admin\ClientsController::edit
+
+admin_client_detalis:
+  path: /klienci/szczegoly/{id}
+  requirements:
+    id: '\d+'
+  controller: App\Controller\Admin\ClientsController::detalis
+
+admin_client_add:
+  path: /klienci/nowy
+  controller: App\Controller\Admin\ClientsController::add
+
+admin_client_delete:
+  path: /klienci/usun/{id}
+  requirements:
+    id: '\d+'
+  controller: App\Controller\Admin\ClientsController::delete

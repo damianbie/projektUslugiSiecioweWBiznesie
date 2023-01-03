@@ -1,0 +1,73 @@
+{% extends 'core/empty_admin.html.twig' %}
+{% block scripts %}
+    <script>
+    jQuery(document).ready(function () {
+        jQuery('.add-another-collection-widget').click(function (e) {
+        var list = jQuery(jQuery(this).attr('data-list-selector'));
+        // Try to find the counter of the list or use the length of the list
+        var counter = list.data('widget-counter') || list.children().length;
+
+        // grab the prototype template
+        var newWidget = list.attr('data-prototype');
+        // replace the "__name__" used in the id and name of the prototype
+        // with a number that's unique to your emails
+        // end name attribute looks like name="contact[emails][2]"
+        newWidget = newWidget.replace(/__name__/g, counter);
+        // Increase the counter
+        counter++;
+        // And store it, the length cannot be used if deleting widgets is allowed
+        list.data('widget-counter', counter);
+
+        // create a new list element and add it to the list
+        var newElem = jQuery(list.attr('data-widget-tags')).html(newWidget);
+        newElem.appendTo(list);
+        $('.select2').select2();
+        });
+    });
+    </script>
+{% endblock %}
+
+{% block mainContent %}
+<div class="card">
+    <div class="card-header d-flex p-0">
+        <h3 class="card-title p-3">Edycja zlecenia</h3>
+    </div><!-- /.card-header -->
+    <div class="card-body">
+    {{ form_start(form) }}
+    {% for ch in form %}
+        {% if ch.vars.name not in ['_token', 'submit', 'services'] %}
+            {{ form_row(ch) }}
+        {% endif %}
+    {% endfor %}
+        <button type="button"
+                class="add-another-collection-widget btn btn-primary"
+                data-list-selector="#services-collection">
+            Dodaj usługę
+        </button>
+
+        <div class="row">
+            <div class="col-2">Nazwa</div>
+            <div class="col-3">Opis</div>
+            <div class="col-1">cena netto</div>
+            <div class="col-1">podatek (bez %)</div>
+            <div class="col-1">koszt</div>
+            <div class="col-2">Pracownik</div>
+            <div class="col-2">Stan</div>
+        </div>
+        <div id="services-collection"
+            data-prototype="{{ form_widget(form.services.vars.prototype)|e }}"
+            data-widget-tags="{{ '<div class="mb-2"></div>'|e }}"
+            data-widget-counter="{{ form.services|length }}">
+            {% for services in form.services %}
+                <div class="mb-2">
+                    {{ form_errors(services) }}
+                    {{ form_widget(services) }}
+                </div>
+            {% endfor %}
+        </div>
+
+
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

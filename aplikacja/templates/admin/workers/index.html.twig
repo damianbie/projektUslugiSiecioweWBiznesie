@@ -1,0 +1,208 @@
+{% extends 'core/empty_admin.html.twig' %}
+{% block title %}Pracownicy {% endblock %}
+
+
+{% block stylesheet %}
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready( function () {
+            $('#dataTablePracownicy, #dataTableStanowiska').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5',
+                ]
+            });
+
+            $('#dataTableStanowiska tbody, #dataTablePracownicy tbody').on( 'click', 'tr', function () {
+                $(this).toggleClass('table-active');
+            } );
+        });
+    </script>
+{% endblock %}
+{% block mainContent %}
+    {% set flash_sc = app.flashes('successForm') %}
+    {% if flash_sc is defined and flash_sc|length > 0 %}
+        {% if flash_sc[0] == 0 %} {% set _scc = 0 %}
+        {% else %} {% set _scc = 1 %} {% endif %}
+
+        <div class="alert {% if _scc==1 %}alert-success{% else %} alert-warning {% endif %} alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h5><i class="icon fas {% if _scc==1 %}fa-check{% else %} fa-ban {% endif %}"></i> {% if _scc==1 %}Sukces!{% else %}Nieoczekiwany błąd{% endif %}</h5>
+            <ul>
+            {% for ms in app.flashes('msg') %}
+                <li>{{ ms }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Pracownicy w bazie danych</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table class="table table-bordered table-striped dataTable" id="dataTablePracownicy">
+                <thead>
+                    {% set table_header %}
+                        <tr>
+                            <td>ID</td>
+                            <td>Imie</td>
+                            <td>Nazwisko</td>
+                            <td>Data urodzenia</td>
+                            <td>Numer telefonu</td>
+                            <td>Zatrudniony od</td>
+                            <td>Stanowisko</td>
+                            <td>Pensja</td>
+                            <td>Akcje</td>
+                        </tr>
+                    {% endset %}
+                {{ table_header }}
+                </thead>
+                    <tbody>
+                        {% for w in workers %}
+                            <tr>
+                                <td> {{ w.id }} </td>
+                                <td> {{ w.name }} </td>
+                                <td> {{ w.surname }}</td>
+                                <td> {{ w.birthDate|date('d/m/Y') }}</td>
+                                <td> {{ w.phoneNumber|default('---') }}</td>
+                                <td> {{ w.hiredAt|date('d/m/Y') }}</td>
+                                <td> {{ w.workPlace.getName() }}</td>
+                                <td> {{ w.bonus + w.workPlace.getMinEarnings() }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a type="button" class="btn btn-default" href="{{ path('admin_workers_detalis', {id: w.id}) }}">Szczegóły</a>
+                                        <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <div class="dropdown-menu" role="menu" style="">
+                                            <a class="dropdown-item" href="{{ path('admin_workers_edit', {id: w.id}) }}">Edytuj</a>
+                                            <a class="dropdown-item text-danger" href="{{ path('admin_workers_delete', {id: w.id}) }}">Usuń</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                <tfoot>
+                    {{ table_header }}
+                </tfoot>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Stanowiska</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table class="table table-bordered table-striped dataTable" id="dataTableStanowiska">
+                <thead>
+                {% set table_header %}
+                    <tr>
+                        <td>ID</td>
+                        <td>Nazwa</td>
+                        <td>Opis</td>
+                        <td>min. zarobki</td>
+                        <td>Akcje</td>
+                    </tr>
+                {% endset %}
+                {{ table_header }}
+                </thead>
+                <tbody>
+                {% for w in workPlaces %}
+                    <tr>
+                        <td> {{ w.id }} </td>
+                        <td> {{ w.name }} </td>
+                        <td> {{ w.description }}</td>
+                        <td>{{ w.minEarnings }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <a type="button" class="btn btn-default" href="{{ path('admin_workPlace_edit', {id: w.id}) }}">Edytuj</a>
+                                <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                    <span class="sr-only">Toggle menu</span>
+                                </button>
+                                <div class="dropdown-menu" role="menu" style="">
+                                    <a class="dropdown-item text-danger" href="{{ path('admin_workPlace_delete', {id: w.id}) }}">Usuń</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                {{ table_header }}
+                </tfoot>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+
+
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Stanowiska</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.card-header -->
+
+        {{ form_start(newWorkPlaceForm) }}
+    <div class="card-body">
+            <div class="form-group">
+                {{ form_label(newWorkPlaceForm.name) }}
+                {{ form_widget(newWorkPlaceForm.name, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(newWorkPlaceForm.min_earnings) }}
+                {{ form_widget(newWorkPlaceForm.min_earnings, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(newWorkPlaceForm.description) }}
+                {{ form_widget(newWorkPlaceForm.description, {'attr': {'class': 'form-control'}}) }}
+            </div>
+
+            {% set formErrors = newWorkPlaceForm.vars.errors.form.getErrors(true) %}
+            {% if formErrors|length %}
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-ban"></i> Błędy w formularzu</h5>
+                        <ul>
+                            {% for error in formErrors %}
+                                <li>{{ error.message }}</li>
+                            {% endfor %}
+                        </ul>
+                </div>
+            {% endif %}
+    </div>
+        <div class="card-footer">
+            {{ form_widget(newWorkPlaceForm.button, {'attr': {'class': 'btn btn-primary float-right'}}) }}
+        </div>
+        {{ form_end(newWorkPlaceForm) }}
+    </div>
+{% endblock %}

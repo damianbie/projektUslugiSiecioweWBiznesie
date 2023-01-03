@@ -1,0 +1,72 @@
+{% extends 'core/empty_admin.html.twig' %}
+{% block title %}Pracownicy {% endblock %}
+
+{% block scripts %}
+    <script>
+        $(function () {
+            $('.datepickerType').datetimepicker({
+                format: 'DD-MM-YYYY'
+            });
+        });
+    </script>
+{% endblock %}
+{% block mainContent %}
+
+    <div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Edycja pracownika</h3>
+    </div><!-- /.card-header -->
+    {{ form_start(worker_form) }}
+    <div class="card-body">
+        <div class="form-group">
+            {{ form_label(worker_form.name) }}
+            {{ form_widget(worker_form.name, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(worker_form.surname) }}
+            {{ form_widget(worker_form.surname, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(worker_form.birthDate) }}
+            {{ form_widget(worker_form.birthDate, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(worker_form.phoneNumber) }}
+            {{ form_widget(worker_form.phoneNumber, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(worker_form.hiredAt) }}
+            {{ form_widget(worker_form.hiredAt, {'attr': {'class': 'form-control'} }) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(worker_form.bonus) }}
+            {{ form_widget(worker_form.bonus, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(worker_form.workPlace) }}
+            {{ form_widget(worker_form.workPlace, {'attr': {'class': 'form-control select2'}}) }}
+        </div>
+        {% set formErrors = worker_form.vars.errors.form.getErrors(true) %}
+        {% if formErrors|length %}
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-ban"></i> Błędy w formularzu</h5>
+                <ul>
+                    {% for error in formErrors %}
+                        <li>{{ error.message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+    <div class="card-footer">
+        {{ form_widget(worker_form.submit, {'attr': {'class': 'btn btn-primary float-right'}}) }}
+    </div>
+    {{ form_end(worker_form) }}
+{% endblock %}

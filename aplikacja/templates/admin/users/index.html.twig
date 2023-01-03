@@ -1,0 +1,101 @@
+{% extends 'core/empty_admin.html.twig' %}
+{% block title %}Pracownicy {% endblock %}
+
+
+{% block stylesheet %}
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready( function () {
+            $('#dataTableUsers').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5',
+                ]
+            });
+        });
+    </script>
+{% endblock %}
+{% block mainContent %}
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Konta pracowników w bazie danych</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table class="table table-bordered table-striped dataTable" id="dataTableUsers">
+                <thead>
+                {% set table_header %}
+                    <tr>
+                        <td>ID</td>
+                        <td>Imie</td>
+                        <td>Nazwisko</td>
+                        <td>Data urodzenia</td>
+                        <td>Numer telefonu</td>
+                        <td>Zatrudniony od</td>
+                        <td>Stanowisko</td>
+                        <td>Ostatnie logowanie</td>
+                        <td>Akcje</td>
+                    </tr>
+                {% endset %}
+                {{ table_header }}
+                </thead>
+                <tbody>
+                    {% for usr in users %}
+                        <tr>
+                            <td>{{ usr.id }}</td>
+                            <td>{{ usr.worker.name }}</td>
+                            <td>{{ usr.worker.surname }}</td>
+                            <td>{{ usr.email }}</td>
+                            <td>{{ usr.worker.phoneNumber }}</td>
+                            <td>{{ usr.worker.hiredAt|date('d/m/Y') }}</td>
+                            <td>{{ usr.worker.workPlace.name }}</td>
+                            <td>{{ usr.lastLoggedIn|date('d/m/Y') }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a type="button" class="btn btn-default text-danger" href="
+                                        {% if usr.active == true %}
+                                            {{ path('admin_user_disable', {id: usr.id}) }}
+                                        {% else %}
+                                            {{ path('admin_user_enable', {id: usr.id}) }}
+                                        {% endif %}
+                                    ">
+                                        {% if usr.active == true %}
+                                            Deaktywuj
+                                        {% else %}
+                                            Aktywuj
+                                        {% endif %}
+                                    </a>
+                                    <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu" role="menu" style="">
+                                        <a class="dropdown-item" href="{{ path('admin_user_edit', {id: usr.id}) }}">Edytuj</a>
+                                        <a class="dropdown-item text-danger" href="{{ path('admin_workers_delete', {id: usr.id}) }}">Usuń</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                {{ table_header }}
+                </tfoot>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+{% endblock %}

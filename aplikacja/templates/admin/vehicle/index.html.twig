@@ -1,0 +1,82 @@
+{% extends 'core/empty_admin.html.twig' %}
+{% block title %}Pojazdy {% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready( function () {
+            $('#dataTablePracownicy, #dataTableStanowiska').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5',
+                ]
+            });
+
+            $('#dataTableStanowiska tbody, #dataTablePracownicy tbody').on( 'click', 'tr', function () {
+                $(this).toggleClass('table-active');
+            } );
+        });
+    </script>
+{% endblock %}
+{% block mainContent %}
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Pojazdy w bazie</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped dataTableDefault" >
+            <thead>
+            {% set table_header %}
+                <tr>
+                    <td>ID</td>
+                    <td>Producent</td>
+                    <td>Model</td>
+                    <td>Rok prod.</td>
+                    <td>vin</td>
+                    <td>Numer rej.</td>
+                    <td>Akcje</td>
+                </tr>
+            {% endset %}
+            {{ table_header }}
+            </thead>
+            <tbody>
+            {% for v in vehicles %}
+                <tr>
+                    <td> {{ v.id }} </td>
+                    <td> {{ v.manufacturer }} </td>
+                    <td> {{ v.model }} </td>
+                    <td> {{ v.productionYear }} </td>
+                    <td> {{ v.vin }} </td>
+                    <td> {{ v.registrationNumber }} </td>
+                    <td>
+                        <div class="btn-group">
+                            <a type="button" class="btn btn-default" href="{{ path('admin_client_detalis', {id: v.id}) }}">Szczegóły</a>
+                            <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu" role="menu" style="">
+                                <a class="dropdown-item" href="{{ path('admin_clients_edit', {id: v.id}) }}">Edytuj</a>
+                                <a class="dropdown-item text-danger" href="{{ path('admin_client_delete', {id: v.id}) }}">Usuń</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            {{ table_header }}
+            </tfoot>
+        </table>
+    </div>
+</div>
+{% endblock %}

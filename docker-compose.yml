@@ -1,0 +1,49 @@
+version: '2'
+
+services:
+  bazadanych:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+    volumes:
+      - ./baza/:/var/lib/mysql
+      # - dbdata:/var/lib/mysql
+    networks:
+      - siecwew
+  aplikacja:
+    build: ./aplikacja
+    ports:
+      - '8000:8000'
+    environment:
+      - APP_ENV=prod
+      - ALLOW_EMPTY_PASSWORD=yes
+      - DATABASE_URL=mysql://root:example@bazadanych:3306/app?serverVersion=5.7
+    # volumes:
+      # - './aplikacja:/app'
+    depends_on:
+      - bazadanych
+    networks:
+      - siecwew
+      - siec
+  admin:
+    image: phpmyadmin
+    environment:
+      - PMA_HOST=bazadanych
+      - PMA_USER=root
+      - PMA_PASSWORD=example
+    ports: 
+      - '8001:80'
+    networks:
+      - siecwew
+      - siec
+volumes:
+  dbdata: 
+  
+networks:
+    siecwew:
+        driver: bridge
+        internal: true
+    siec:
+        driver: bridge
+        internal: false
